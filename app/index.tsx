@@ -16,22 +16,21 @@ import {
   calcUnfinishedBonus,
 } from '../utils/scoring';
 import { ScorePad } from '../components/ScorePad';
-import { HandInputSheet } from '../components/HandInputSheet';
-
+import { useRouter } from 'expo-router';
 const C = {
-  bg: '#0f1117',
-  surface: '#1a1d27',
-  border: '#2d3148',
-  text: '#ffffff',
-  subtext: '#6b7280',
-  accent: '#22c55e',
-  accentDim: '#1a2e1a',
+  bg: '#fdfbf7',
+  surface: '#ffffff',
+  border: '#cbd5e1',
+  text: '#1f2937',
+  subtext: '#64748b',
+  accent: '#2563eb',
+  accentDim: '#dbeafe',
   danger: '#ef4444',
 };
 
 export default function IndexScreen() {
+  const router = useRouter();
   const { state, addHand, undoLastHand, newRubber } = useRubber();
-  const [sheetVisible, setSheetVisible] = useState(false);
 
   if (!state.loaded) {
     return (
@@ -55,7 +54,6 @@ export default function IndexScreen() {
     honours?: { side: Side; value: 100 | 150 },
   ) => {
     addHand(contract, result, doubled, honours);
-    setSheetVisible(false);
   };
 
   const handleNewRubber = () => {
@@ -164,19 +162,14 @@ export default function IndexScreen() {
       {!rs.rubberComplete && (
         <TouchableOpacity
           style={styles.fab}
-          onPress={() => setSheetVisible(true)}
+          onPress={() => router.push('/enter-hand')}
           activeOpacity={0.85}
         >
           <Text style={styles.fabText}>+</Text>
         </TouchableOpacity>
       )}
 
-      {/* ── Hand input bottom sheet ── */}
-      <HandInputSheet
-        visible={sheetVisible}
-        onClose={() => setSheetVisible(false)}
-        onConfirm={handleAddHand}
-      />
+      {/* Hand input moved to /enter-hand */}
     </SafeAreaView>
   );
 }
@@ -203,7 +196,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: C.border,
-    backgroundColor: '#12151f',
+    backgroundColor: C.surface,
   },
   appTitle: {
     color: C.text,
@@ -217,7 +210,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   rubberCompleteChip: {
-    backgroundColor: '#1a2e1a',
+    backgroundColor: C.accentDim,
     borderWidth: 1,
     borderColor: C.accent,
     borderRadius: 12,
@@ -232,7 +225,7 @@ const styles = StyleSheet.create({
 
   // Winner banner
   winnerBanner: {
-    backgroundColor: '#1a2e1a',
+    backgroundColor: C.accentDim,
     borderBottomWidth: 2,
     borderBottomColor: C.accent,
     paddingVertical: 14,
@@ -247,7 +240,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   winnerBannerBonus: {
-    color: '#86efac',
+    color: '#15803d',
     fontSize: 13,
   },
   newRubberBannerBtn: {
@@ -258,7 +251,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   newRubberBannerBtnText: {
-    color: '#000',
+    color: '#ffffff',
     fontWeight: '800',
     fontSize: 14,
   },
@@ -266,7 +259,7 @@ const styles = StyleSheet.create({
   // Toolbar
   toolbar: {
     flexDirection: 'row',
-    backgroundColor: '#12151f',
+    backgroundColor: C.surface,
     paddingHorizontal: 12,
     paddingTop: 8,
     paddingBottom: 8,
@@ -315,7 +308,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   fabText: {
-    color: '#000',
+    color: '#ffffff',
     fontSize: 30,
     lineHeight: 32,
     fontWeight: '300',

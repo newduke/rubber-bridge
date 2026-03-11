@@ -16,15 +16,15 @@ import {
 } from '../utils/scoring';
 
 const C = {
-  felt: '#1b5e20',
-  card: '#fffde7',
-  ns: '#1565c0',
-  ew: '#b71c1c',
-  black: '#212121',
-  subtle: '#757575',
-  white: '#fff',
-  border: '#e0e0e0',
-  gold: '#f9a825',
+  felt: '#fdfbf7',
+  card: '#ffffff',
+  ns: '#2563eb',
+  ew: '#dc2626',
+  black: '#1f2937',
+  subtle: '#64748b',
+  white: '#ffffff',
+  border: '#cbd5e1',
+  gold: '#cbd5e1',
 };
 
 function formatDate(ts: number): string {
@@ -154,7 +154,7 @@ const cardStyles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: '#f0f4c3',
+    backgroundColor: '#f8fafc',
     borderBottomWidth: 1,
     borderBottomColor: C.border,
   },
@@ -294,12 +294,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   emptyTitle: {
-    color: '#a5d6a7',
+    color: '#1f2937',
     fontSize: 18,
     fontWeight: '700',
   },
   emptySubtitle: {
-    color: '#81c784',
+    color: '#64748b',
     fontSize: 14,
   },
 });

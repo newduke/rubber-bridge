@@ -6,8 +6,14 @@
     "scheme": "rubber-bridge",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "platforms": ["ios", "android"],
-    "assetBundlePatterns": ["**/*"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false
     },
@@ -15,6 +21,9 @@
       "adaptiveIcon": {
         "backgroundColor": "#1b5e20"
       }
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

@@ -4,17 +4,17 @@ import { ComputedRubberState, GameSegment } from '../utils/scoring';
 import { HandRow } from './HandRow';
 
 const C = {
-  bg: '#0f1117',
-  surface: '#1a1d27',
-  border: '#2d3148',
-  text: '#ffffff',
-  subtext: '#6b7280',
-  accent: '#22c55e',
-  ns: '#60a5fa',
-  ew: '#f87171',
-  vul: '#ef4444',
-  sectionBg: '#12151f',
-  lineBg: '#1a2e1a',
+  bg: '#fdfbf7',
+  surface: '#ffffff',
+  border: '#cbd5e1',
+  text: '#1f2937',
+  subtext: '#64748b',
+  accent: '#2563eb',
+  ns: '#2563eb',
+  ew: '#dc2626',
+  vul: '#dc2626',
+  sectionBg: '#f1f5f9',
+  lineBg: '#dbeafe',
 };
 
 interface Props {
@@ -155,7 +155,7 @@ export function ScorePad({ state }: Props) {
                     styles.winnerBadge,
                     {
                       backgroundColor:
-                        seg.winner === 'NS' ? '#1e3a5f' : '#3f1515',
+                        seg.winner === 'NS' ? '#dbeafe' : '#fee2e2',
                     },
                   ]}
                 >
@@ -232,11 +232,10 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingTop: 0, paddingBottom: 20 },
 
-  // Column header
   colHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#12151f',
+    backgroundColor: C.surface,
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: C.border,
@@ -341,13 +340,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
-  // Subtotal / running total row
   subtotalRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 4,
     paddingHorizontal: 10,
-    backgroundColor: '#12151f',
+    backgroundColor: C.surface,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: C.border,
   },
@@ -371,13 +369,12 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
 
-  // Grand totals
   totalsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 10,
-    backgroundColor: '#12151f',
+    backgroundColor: C.surface,
     borderTopWidth: 2,
     borderTopColor: C.accent,
     marginTop: 4,

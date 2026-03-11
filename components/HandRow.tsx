@@ -3,10 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import { HandEntry, contractLabel, resultLabel } from '../utils/scoring';
 
 const C = {
-  ns: '#60a5fa',
-  ew: '#f87171',
-  subtext: '#6b7280',
-  divider: '#2d3148',
+  ns: '#2563eb',
+  ew: '#dc2626',
+  subtext: '#64748b',
+  divider: '#cbd5e1',
 };
 
 interface HandRowProps {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1e2235',
+    borderBottomColor: '#f1f5f9',
   },
   label: {
     flex: 2,
