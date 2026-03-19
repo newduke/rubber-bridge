@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 import { useRubber } from '../context/RubberContext';
 import {
   Suit,
@@ -232,10 +233,21 @@ type BidRecord = { seat: Seat; call: Call };
 
 export default function EnterHandScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { state, addHand } = useRubber();
 
   const [step, setStep] = useState<'dealer' | 'bidding' | 'scoring'>('dealer');
-  
+
+  const expectedDealer = useMemo(() => {
+    const hands = state.currentRubber.hands;
+    if (hands.length === 0) return 'N'; // Often North deals first
+    const lastHand = hands[hands.length - 1];
+    if (lastHand.dealer) {
+      return SEATS[(SEATS.indexOf(lastHand.dealer) + 1) % 4];
+    }
+    return SEATS[hands.length % 4];
+  }, [state.currentRubber.hands]);
+
   // Dealer
   const [dealer, setDealer] = useState<Seat | null>(null);
 
@@ -248,6 +260,74 @@ export default function EnterHandScreen() {
   const [honours, setHonours] = useState<
     'none' | '100NS' | '100EW' | '150NS' | '150EW'
   >('none');
+
+  const isExitingRef = useRef(false);
+  const appStateRef = useRef({ step, bids });
+
+  // Keep ref up to date synchronously without re-triggering effects
+  useEffect(() => {
+    appStateRef.current = { step, bids };
+  }, [step, bids]);
+
+  // Intercept back navigation - exactly ONCE to avoid dropping listeners
+  useEffect(() => {
+    const handleIntercept = () => {
+      if (isExitingRef.current) return false;
+      const { step: currentStep, bids: currentBids } = appStateRef.current;
+
+      if (currentStep === 'scoring') {
+        setStep('bidding');
+        setBids(currentBids.slice(0, -1));
+        return true;
+      } else if (currentStep === 'bidding') {
+        if (currentBids.length > 0) {
+          setBids(currentBids.slice(0, -1));
+          return true;
+        } else {
+          setStep('dealer');
+          setDealer(null);
+          return true;
+        }
+      }
+      return false; // let normal back happen (e.g. at dealer step)
+    };
+
+    // Intercept React Navigation back (iOS swipe, standard React Nav back)
+    const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
+      if (isExitingRef.current) return;
+      const { step: currentStep } = appStateRef.current;
+      if (currentStep !== 'dealer') {
+        e.preventDefault();
+        handleIntercept();
+      }
+    });
+
+    // Intercept Android Hardware Back
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleIntercept);
+
+    // Intercept Browser Back (web only)
+    const handleBrowserBack = () => {
+      if (handleIntercept()) {
+        // Push a new state to keep the user on the current page
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    };
+
+    // Check if running on web platform
+    if (typeof window !== 'undefined' && window.history) {
+      // Push an initial state to enable popstate detection
+      window.history.pushState(null, '', window.location.pathname);
+      window.addEventListener('popstate', handleBrowserBack);
+    }
+
+    return () => {
+      unsubscribe();
+      backHandler.remove();
+      if (typeof window !== 'undefined' && window.history) {
+        window.removeEventListener('popstate', handleBrowserBack);
+      }
+    };
+  }, [navigation]);
 
   const rs = useMemo(
     () => computeRubberState(state.currentRubber.hands),
@@ -303,6 +383,7 @@ export default function EnterHandScreen() {
       
       if (isPassedOut) {
         Alert.alert('Passed Out', 'No one bid. Hand is passed out.');
+        isExitingRef.current = true;
         router.back();
       } else if (isBiddingOver) {
         setStep('scoring');
@@ -340,7 +421,8 @@ export default function EnterHandScreen() {
     }
     if (!highestBid) return;
     
-    addHand(contract, result, currentDoubled, honoursValue);
+    isExitingRef.current = true;
+    addHand(contract, result, currentDoubled, honoursValue, dealer || 'N');
     router.replace('/');
   };
 
@@ -389,6 +471,21 @@ export default function EnterHandScreen() {
             }}
             colorFor={seatColor}
             size="lg"
+            renderLabel={(s, disabled, isSel) => {
+              const color = seatColor(s);
+              const isExpected = s === expectedDealer;
+              return (
+                <Text
+                  style={[
+                    pillStyles.pillText,
+                    { color: isSel ? C.white : color },
+                    { fontSize: 16, fontWeight: '700' },
+                  ]}
+                >
+                  {String(s)} {isExpected ? '(Next)' : ''}
+                </Text>
+              );
+            }}
           />
         </View>
       </View>
@@ -587,7 +684,7 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: C.white,
+    color: C.black,
     marginBottom: 8,
   },
   descriptionText: {

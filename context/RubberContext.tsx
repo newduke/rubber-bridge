@@ -11,6 +11,7 @@ import {
   Contract,
   Doubled,
   Side,
+  Seat,
   calculateHandScores,
   computeRubberState,
   declarerSide,
@@ -35,6 +36,7 @@ type Action =
         result: number;
         doubled: Doubled;
         honours?: { side: Side; value: 100 | 150 };
+        dealer?: Side | Seat; // Allow Seat for dealer, but typescript may complain if imported? Wait, let's just use Seat here. I need to make sure Seat is imported.
       };
     }
   | { type: 'UNDO_LAST_HAND' }
@@ -50,7 +52,7 @@ function reducer(state: AppState, action: Action): AppState {
       };
 
     case 'ADD_HAND': {
-      const { contract, result, doubled, honours } = action.payload;
+      const { contract, result, doubled, honours, dealer } = action.payload;
       const current = state.currentRubber;
 
       // Compute current rubber state to determine vulnerability
@@ -71,6 +73,7 @@ function reducer(state: AppState, action: Action): AppState {
         scores,
         timestamp: Date.now(),
         vulnerable,
+        dealer: dealer as Seat,
       };
 
       const updatedRubber: RubberData = {
@@ -139,6 +142,7 @@ interface RubberContextValue {
     result: number,
     doubled: Doubled,
     honours?: { side: Side; value: 100 | 150 },
+    dealer?: Seat,
   ) => void;
   undoLastHand: () => void;
   newRubber: (withUnfinishedBonus?: boolean) => void;
@@ -170,8 +174,9 @@ export function RubberProvider({ children }: { children: React.ReactNode }) {
       result: number,
       doubled: Doubled,
       honours?: { side: Side; value: 100 | 150 },
+      dealer?: Seat,
     ) => {
-      dispatch({ type: 'ADD_HAND', payload: { contract, result, doubled, honours } });
+      dispatch({ type: 'ADD_HAND', payload: { contract, result, doubled, honours, dealer } });
     },
     [],
   );

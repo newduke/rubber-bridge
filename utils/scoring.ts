@@ -29,6 +29,7 @@ export interface HandEntry {
   scores: HandScores;
   timestamp: number;
   vulnerable: boolean; // was declarer's side vulnerable when played
+  dealer?: Seat;
 }
 
 export interface GameSegment {
