@@ -51,7 +51,6 @@ function ScoreSubtotalRow({
           {ns > 0 ? String(ns) : ''}
         </Text>
       </View>
-      <View style={styles.colDivider} />
       <View style={styles.ewCell}>
         <Text style={[styles.subtotalValue, { color: C.ew }]}>
           {ew > 0 ? String(ew) : ''}
@@ -73,6 +72,7 @@ export function ScorePad({ state }: Props) {
     nsTotal,
     ewTotal,
     gameSegments,
+    rubberComplete,
   } = state;
 
   const aboveHands = hands.filter(
@@ -85,6 +85,9 @@ export function ScorePad({ state }: Props) {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+      <View style={[styles.bgDivider, { left: '50%' }]} pointerEvents="none" />
+      <View style={[styles.bgDivider, { left: '75%' }]} pointerEvents="none" />
+
       {/* ── Column header with side labels + vul indicators ── */}
       <View style={styles.colHeaderRow}>
         <View style={styles.labelColHeader} />
@@ -94,7 +97,6 @@ export function ScorePad({ state }: Props) {
             <Text style={[styles.sideLabel, { color: C.ns }]}>NS</Text>
           </View>
         </View>
-        <View style={styles.colDivider} />
         <View style={styles.ewColHeader}>
           <View style={styles.sideHeaderInner}>
             {ewVul && <VulDot />}
@@ -108,7 +110,7 @@ export function ScorePad({ state }: Props) {
 
       {aboveHands.length === 0 ? (
         <View style={styles.emptyRow}>
-          <Text style={styles.emptyText}>–</Text>
+          <Text style={styles.emptyText}> </Text>
         </View>
       ) : (
         aboveHands.map((hand) => (
@@ -144,7 +146,12 @@ export function ScorePad({ state }: Props) {
         return (
           <View key={`seg-${seg.gameNumber}`}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionHeaderText}>
+              <Text
+                style={[
+                  styles.sectionHeaderText,
+                  seg.winner === 'NS' ? { color: C.ns } : seg.winner === 'EW' ? { color: C.ew } : undefined,
+                ]}
+              >
                 {seg.winner
                   ? `GAME ${seg.gameNumber} — ${seg.winner} WON`
                   : `GAME ${seg.gameNumber}`}
@@ -173,7 +180,7 @@ export function ScorePad({ state }: Props) {
 
             {belowHands.length === 0 ? (
               <View style={styles.emptyRow}>
-                <Text style={styles.emptyText}>–</Text>
+                <Text style={styles.emptyText}> </Text>
               </View>
             ) : (
               belowHands.map((hand) => (
@@ -210,14 +217,13 @@ export function ScorePad({ state }: Props) {
       })}
 
       {/* ── GRAND TOTALS ── */}
-      <View style={styles.totalsRow}>
+      <View style={[styles.totalsRow, rubberComplete && { borderTopWidth: 0 }]}>
         <View style={styles.totalsLabel}>
           <Text style={styles.totalsTitleText}>TOTAL</Text>
         </View>
         <View style={styles.nsCell}>
           <Text style={[styles.totalsValue, { color: C.ns }]}>{nsTotal}</Text>
         </View>
-        <View style={styles.colDivider} />
         <View style={styles.ewCell}>
           <Text style={[styles.totalsValue, { color: C.ew }]}>{ewTotal}</Text>
         </View>
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
   ewColHeader: { flex: 1, alignItems: 'center' },
   sideHeaderInner: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   sideLabel: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '800',
     letterSpacing: 2,
   },
@@ -256,11 +262,13 @@ const styles = StyleSheet.create({
     backgroundColor: C.vul,
   },
 
-  // Column divider
-  colDivider: {
+  bgDivider: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
     width: 1,
-    alignSelf: 'stretch',
     backgroundColor: C.border,
+    zIndex: 10,
   },
 
   // NS / EW cells (shared)
@@ -283,12 +291,9 @@ const styles = StyleSheet.create({
     backgroundColor: C.sectionBg,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderTopWidth: 1,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: C.border,
   },
   sectionHeaderText: {
-    fontSize: 10,
+    fontSize: 13,
     fontWeight: '700',
     color: C.subtext,
     letterSpacing: 1,
@@ -334,7 +339,7 @@ const styles = StyleSheet.create({
   },
   theLineText: {
     color: C.accent,
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: '700',
     letterSpacing: 3,
     marginHorizontal: 10,
@@ -351,13 +356,13 @@ const styles = StyleSheet.create({
   },
   subtotalLabel: {
     flex: 2,
-    fontSize: 10,
+    fontSize: 13,
     color: '#4b5563',
     fontStyle: 'italic',
     letterSpacing: 0.5,
   },
   subtotalValue: {
-    fontSize: 13,
+    fontSize: 17,
     fontWeight: '700',
   },
 
@@ -365,7 +370,6 @@ const styles = StyleSheet.create({
   gameLine: {
     borderBottomWidth: 3,
     borderBottomColor: C.ns,
-    marginHorizontal: 10,
     marginVertical: 2,
   },
 
@@ -383,13 +387,13 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   totalsTitleText: {
-    fontSize: 11,
+    fontSize: 15,
     fontWeight: '700',
     color: C.subtext,
     letterSpacing: 2,
   },
   totalsValue: {
-    fontSize: 26,
+    fontSize: 32,
     fontWeight: '800',
   },
 });

@@ -6,3 +6,17 @@ web-build/
 .env
 .env.*
 !.env.example
+
+# Android/iOS build artifacts
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Google Play Service Account
+google-play-service-account.json
+
+# EAS
+.eas/

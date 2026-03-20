@@ -14,14 +14,18 @@ module.exports = () => ({
       supportsTablet: false,
     },
     android: {
+      package: 'com.newduke.rubberbridge',
       adaptiveIcon: {
         backgroundColor: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_BG || '#1b5e20',
       },
     },
-    plugins: ['expo-asset'],
+    plugins: ['expo-asset', 'expo-router'],
     extra: {
       appEnv: process.env.APP_ENV || 'development',
       apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL || '',
+      eas: {
+        projectId: '3a1b18e6-98e9-42e3-8fe5-14f60191f3fb',
+      },
     },
   },
 });

@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRubber } from '../context/RubberContext';
 import {
   computeRubberState,
@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     color: C.text,
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   gameStatus: {
     color: C.subtext,
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '500',
   },
   rubberCompleteChip: {

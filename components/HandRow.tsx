@@ -32,7 +32,6 @@ export function HandRow({ hand, nsValue, ewValue }: HandRowProps) {
           {nsValue > 0 ? String(nsValue) : ''}
         </Text>
       </View>
-      <View style={styles.divider} />
       <View style={styles.ewCell}>
         <Text style={[styles.value, { color: C.ew }]}>
           {ewValue > 0 ? String(ewValue) : ''}
@@ -53,11 +52,11 @@ const styles = StyleSheet.create({
   },
   label: {
     flex: 2,
-    fontSize: 11,
+    fontSize: 14,
     color: C.subtext,
   },
   result: {
-    fontSize: 11,
+    fontSize: 14,
     color: C.subtext,
   },
   nsCell: {
@@ -71,12 +70,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   value: {
-    fontSize: 14,
+    fontSize: 19,
     fontWeight: '600',
-  },
-  divider: {
-    width: 1,
-    height: 18,
-    backgroundColor: C.divider,
   },
 });
